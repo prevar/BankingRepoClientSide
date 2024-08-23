@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useContext, useEffect } from "react";
-import { auth } from "./firebaseConfig";
+import { auth, SERVER_URL } from "./firebaseConfig";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -135,7 +135,9 @@ const Login = () => {
     (async () => {
       const { email } = user;
       try {
-        const url = 'https://bankingportfolioserverside.onrender.com'+`/account/find/${email}`
+        console.log('SERVER_URL='+SERVER_URL);
+        const url =  SERVER_URL +`/account/find/${email}`
+        //const url = 'http://localhost:3001'+`/account/find/${email}`
         console.log('url==========='+url);
         let response = await fetch(
           url
