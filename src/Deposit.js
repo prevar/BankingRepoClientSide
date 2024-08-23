@@ -58,8 +58,9 @@ function Deposit() {
   }
 
   async function callDepositAmt(addedAmount) {
+    const url = process.env.SERVER_URL+`http://localhost:3001/account/updateBalance/${userEmail}/${addedAmount}`; 
     let response = await fetch(
-      `http://localhost:3001/account/updateBalance/${userEmail}/${addedAmount}`
+      url
     );
     let userAfterDeposit = await response.json();
     //console.log('callDepositAmt end - userAfterDeposit='+JSON.stringify(userAfterDeposit));

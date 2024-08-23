@@ -135,8 +135,9 @@ const Login = () => {
     (async () => {
       const { email } = user;
       try {
+        const url = process.env.SERVER_URL+`account/find/${email}`
         let response = await fetch(
-          `http://localhost:3001/account/find/${email}`
+          url
         );
         let authenticatedUser = await response.json();
         console.log("response.json:", authenticatedUser);

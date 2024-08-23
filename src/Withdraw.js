@@ -63,8 +63,9 @@ function Withdraw() {
   }
 
   async function callWithdrawAmt(withdrawnAmount) {
+    const url = process.env.SERVER_URL + `/account/updateBalance/${userEmail}/${withdrawnAmount}`
     let response = await fetch(
-      `http://localhost:3001/account/updateBalance/${userEmail}/${withdrawnAmount}`
+      url
     );
     let userAfterWithdraw = await response.json();
     return userAfterWithdraw;

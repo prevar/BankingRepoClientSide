@@ -13,7 +13,8 @@ function Transfer() {
 
   useEffect(() => {
     async function findAllUsers() {
-      let response = await fetch(`http://localhost:3001/account/findAll`);
+      const url = process.env.SERVER_URL +`/account/findAll`
+      let response = await fetch(url);
       let data = await response.json();
       setUsers(data);
     }
@@ -32,8 +33,9 @@ function Transfer() {
     return true;
   }
   async function callTransferAmt() {
+    const url = process.env.SERVER_URL + `/account/transfer/${userEmail}/${fromUserEmail}/${toUserEmail}/${transferAmount}`
     let response = await fetch(
-      `http://localhost:3001/account/transfer/${userEmail}/${fromUserEmail}/${toUserEmail}/${transferAmount}`
+      url
     );
     if (response.status == 200) {
       setStatus("SUCCESS: Amount Transferred successfully");
