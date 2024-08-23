@@ -58,7 +58,7 @@ function Deposit() {
   }
 
   async function callDepositAmt(addedAmount) {
-    const url = process.env.SERVER_URL+`http://localhost:3001/account/updateBalance/${userEmail}/${addedAmount}`; 
+    const url = `https://bankingportfolioserverside.onrender.com/account/updateBalance/${userEmail}/${addedAmount}`; 
     let response = await fetch(
       url
     );

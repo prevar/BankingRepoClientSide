@@ -63,7 +63,7 @@ function Withdraw() {
   }
 
   async function callWithdrawAmt(withdrawnAmount) {
-    const url = process.env.SERVER_URL + `/account/updateBalance/${userEmail}/${withdrawnAmount}`
+    const url = `https://bankingportfolioserverside.onrender.com/account/updateBalance/${userEmail}/${withdrawnAmount}`
     let response = await fetch(
       url
     );
