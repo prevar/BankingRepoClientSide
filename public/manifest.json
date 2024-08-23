@@ -1,0 +1,23 @@
+{
+  "short_name": "MERN Banking App",
+  "name": "MERN Banking Application",
+  "description": "Banking for you",
+ 
+  "bank": [
+    {
+      "src": "/bank.jpg",
+      "type": "image/jpg",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/bank.jpg",
+      "type": "image/jpg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/bank.jpg",
+      "type": "image/jpg",
+      "sizes": "512x512"
+    }
+  ]
+}

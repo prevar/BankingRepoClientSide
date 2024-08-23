@@ -1,0 +1,45 @@
+.container {
+    background-color:rgb(157, 198, 239);
+    padding:3px;
+}
+
+.title {
+    color:white;
+}
+
+.body {
+    background-color: black;
+}
+
+#root {
+    padding:20px;
+    float:center;
+}
+
+.error {
+    color:red;
+}
+
+.success {
+    color:green;
+}
+
+.hide {
+    display:none;
+}
+
+.show {
+    display:inline;
+}
+
+#root {
+    background-color: black;
+}
+
+.nav-btn {
+    width:30px;
+    text-align:center;
+    border:1px solid black;
+    margin:5px;
+    padding:5px;
+}
