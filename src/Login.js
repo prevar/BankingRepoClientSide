@@ -135,7 +135,9 @@ const Login = () => {
     (async () => {
       const { email } = user;
       try {
-        const url = process.env.SERVER_URL+`account/find/${email}`
+        console.log('server_url='+server_url);
+        const url = 'https://bankingportfolioserverside.onrender.com'+`/account/find/${email}`
+        console.log('url==========='+url);
         let response = await fetch(
           url
         );
