@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { AppContext, Card } from "./AppContext";
 import { useNavigate } from "react-router-dom";
+import { SERVER_URL } from "./firebaseConfig";
 
 function Deposit() {
   const { userEmail, setUserEmail } = useContext(AppContext);
@@ -58,7 +59,7 @@ function Deposit() {
   }
 
   async function callDepositAmt(addedAmount) {
-    const url = `https://bankingportfolioserverside.onrender.com/account/updateBalance/${userEmail}/${addedAmount}`; 
+    const url =  SERVER_URL +`/account/updateBalance/${userEmail}/${addedAmount}`; 
     let response = await fetch(
       url
     );

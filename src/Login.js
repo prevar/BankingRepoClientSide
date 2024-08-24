@@ -137,7 +137,6 @@ const Login = () => {
       try {
         console.log('SERVER_URL='+SERVER_URL);
         const url =  SERVER_URL +`/account/find/${email}`
-        //const url = 'http://localhost:3001'+`/account/find/${email}`
         console.log('url==========='+url);
         let response = await fetch(
           url

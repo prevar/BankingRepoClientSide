@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { AppContext, Card } from "./AppContext";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebaseConfig";
+import { auth , SERVER_URL} from "./firebaseConfig";
 
 function CreateAccount() {
   const { userEmail, setUserEmail } = useContext(AppContext);
   const { history, setHistory } = useContext(AppContext);
+  const { roles, setRoles } = useContext(AppContext);
 
   const navigate = useNavigate();
   const [show, setShow] = useState(true);
@@ -77,34 +78,39 @@ function CreateForm(props) {
     return true;
   }
 
-  function handle() {
+   function handle() {
     console.log(name, email, password);
+    var data;
     if (!validate(name, "Name")) return;
     if (!validate(email, "Email")) return;
     if (!validate(password, "Password")) return; 
    
-    console.log('role is'+ role);
-    const roles = [role];
-
-    createUserWithEmailAndPassword(auth, email, password)
+    
+    
+     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log(userCredential.user.uid);
-        const url = `https://bankingportfolioserverside.onrender.com/account/create/${name}/${email}/${userCredential.user.uid}/${roles}/${props.userEmail}/`;
-        (async () => {
-          var res = await fetch(url);
-          var data = await res.json();
-          console.log(data);
-        })();
-        console.log("Login: User created succesfully!!!");
+        data = createUser(userCredential.user.uid);
+        console.log("Login: User created succesfully!!! with data"+JSON.stringify(data));
 
         props.setStatus("SUCCESS:User created succesfully!");
-      })
+      }).then(console.log('in then data is' + data))
       .catch((error) => {
         console.log(error.code + ":" + error.mesage);
         props.setStatus("ERROR:" + error.message);
       });
 
     props.setShow(false);
+  }
+
+
+  async function createUser(uid) {
+    const url = SERVER_URL +`/account/create/${name}/${email}/${uid}/${role}/${props.userEmail}/`;
+       
+    var res = await fetch(url);
+    var data = await res.json();
+    return await data;
+
   }
 
   return (

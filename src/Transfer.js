@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import { AppContext, Card } from "./AppContext";
+import { SERVER_URL } from "./firebaseConfig";
 
 function Transfer() {
   const { userEmail, setUserEmail } = useContext(AppContext);
@@ -13,7 +14,8 @@ function Transfer() {
 
   useEffect(() => {
     async function findAllUsers() {
-      const url = `https://bankingportfolioserverside.onrender.com/account/findAll`
+      const url =  SERVER_URL + `/account/findAll`
+      
       let response = await fetch(url);
       let data = await response.json();
       setUsers(data);
@@ -33,7 +35,8 @@ function Transfer() {
     return true;
   }
   async function callTransferAmt() {
-    const url = `https://bankingportfolioserverside.onrender.com/account/transfer/${userEmail}/${fromUserEmail}/${toUserEmail}/${transferAmount}`
+    const url =  SERVER_URL + `/account/transfer/${userEmail}/${fromUserEmail}/${toUserEmail}/${transferAmount}`
+    
     let response = await fetch(
       url
     );

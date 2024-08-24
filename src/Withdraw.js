@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext, Card } from "./AppContext";
+import { SERVER_URL } from "./firebaseConfig";
 
 function Withdraw() {
   const { userEmail, setUserEmail } = useContext(AppContext);
@@ -63,7 +64,7 @@ function Withdraw() {
   }
 
   async function callWithdrawAmt(withdrawnAmount) {
-    const url = `https://bankingportfolioserverside.onrender.com/account/updateBalance/${userEmail}/${withdrawnAmount}`
+   const url =  SERVER_URL + `/account/updateBalance/${userEmail}/${withdrawnAmount}`
     let response = await fetch(
       url
     );
