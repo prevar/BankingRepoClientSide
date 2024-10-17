@@ -44,7 +44,7 @@ export function Card(props) {
     : "";
 
   return (
-    <div className={classes()} style={{ maxWidth: "38rem" }}>
+    <div className={classes()} >
       <div className="card-header">{props.header}</div>
       <div className="card-body">
         {props.status && (

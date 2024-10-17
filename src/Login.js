@@ -15,8 +15,8 @@ const Login = () => {
   const navigate = useNavigate();
   const { userEmail, setUserEmail } = useContext(AppContext);
   const { setBalance } = useContext(AppContext);
-  const { history, setHistory } = useContext(AppContext);
-  const { roles, setRoles } = useContext(AppContext);
+  const { setHistory } = useContext(AppContext);
+  const { setRoles } = useContext(AppContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,10 +24,13 @@ const Login = () => {
 
   useEffect(() => {
     console.log("Login.js: in useEffect user=" + userEmail);
+
+    //Need handle to the buttons in order to hide or display them based on whether user is logged in or not.
     const login = document.getElementById("login");
     const logout = document.getElementById("logout");
     const googlelogin = document.getElementById("googlelogin");
 
+    //if userEmail is set, display logout and hide login and google login else vice versa.
     if (userEmail) {
       logout.style.display = "inline";
       login.style.display = "none";
@@ -60,7 +63,7 @@ const Login = () => {
                 login.style.display = 'inline';
             }
         }) */
-    console.log("auth.currentuser=" + auth.currentUser);
+    console.log("auth.currentuser=" + JSON.stringify(auth.currentUser));
   }, [userEmail]);
 
   /**Function to validate the input fields. If empty, it returns false */
@@ -73,7 +76,7 @@ const Login = () => {
     return true;
   }
 
-  /**Function to handleLogin button pressed. If fields are valid, it authenticates the user. */
+  /**Function to handleLogin button pressed. If fields are valid, it authenticates the user in firebase and gets user account from the banking database. */
   function handleLogin(e) {
     e.preventDefault();
     setStatus("");
@@ -83,9 +86,9 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log(
-          "Login: User authenticated!!!" + JSON.stringify(userCredential.user)
+          "Login: User authenticated In Firebase!!!" + JSON.stringify(userCredential.user)
         );
-        setStatus("SUCCESS:User authenticated!");
+        setStatus("SUCCESS:User authenticated!Loading data...");
         getUserAccount(userCredential.user);
       })
       .catch((error) => {
@@ -97,6 +100,8 @@ const Login = () => {
     //overrideFirebase();
   }
 
+
+   /**Function to handleGoogleLogin button pressed. Popup is displayed to choose google login credentials */
   function handleGoogleLogin() {
     const googleProvider = new GoogleAuthProvider();
 
@@ -106,7 +111,8 @@ const Login = () => {
         // Get the Google access token
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
-
+        console.log(token);
+        
         // Get signed-in user info
         const user = result.user;
         getUserAccount(user);
@@ -127,10 +133,15 @@ const Login = () => {
   function overrideFirebase() {
     setUserEmail("preeti@gmail.com");
     setBalance(0);
-    setStatus("SUCCESS:user authenticated!");
+    setStatus("SUCCESS:user authenticated! Loading data... ");
     getUserAccount({ email: "preeti@gmail.com" });
   }
 
+  /**
+   * Method used to get the user credentials from the database. It makes a REST call to the server using server url values in the env file and invokes the 
+   * find method on the server passing the entered email id.}
+   * @param { user }
+   */
   function getUserAccount(user) {
     (async () => {
       const { email } = user;
@@ -144,7 +155,7 @@ const Login = () => {
         let authenticatedUser = await response.json();
         console.log("response.json:", authenticatedUser);
         if (authenticatedUser) {
-          setStatus("SUCCESS: User authenticated");
+          setStatus("Found user in database");
           setUserEmail(authenticatedUser[0].email);
           setBalance(authenticatedUser[0].balance);
           setHistory(authenticatedUser[0].history);
@@ -160,6 +171,7 @@ const Login = () => {
     })();
   }
 
+  /**Function called when Logout is pressed */
   function handleLogout() {
     signOut(auth)
       .then(clearContext())
@@ -169,11 +181,20 @@ const Login = () => {
       });
   }
 
+  /** Used to empty the context to intiial values when logout is called */
   function clearContext() {
     setUserEmail(null);
+    setBalance(0);
+    setHistory([]);
+    setRoles([]);
     setStatus("SUCCESS: User Logged out successfully!");
   }
 
+  /**
+   * 
+   * @param {*} e 
+   * @returns 
+   */
   function handleRegister(e) {
     e.preventDefault();
     setStatus("");
@@ -231,27 +252,21 @@ const Login = () => {
               id="login"
               className="btn btn-light"
               onClick={handleLogin}
-            >
-              {" "}
-              Login
+            >Login
             </button>
             <button
               type="button"
               id="googlelogin"
               className="btn btn-light"
               onClick={handleGoogleLogin}
-            >
-              {" "}
-              Google Login
+            >Google Login
             </button>
             <button
               type="button"
               id="logout"
               className="btn btn-light"
               onClick={handleLogout}
-            >
-              {" "}
-              Logout
+            >Logout
             </button>
           </>
         }

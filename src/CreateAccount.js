@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth , SERVER_URL} from "./firebaseConfig";
 
+//const bcrypt = require('bcryptjs');
+
 function CreateAccount() {
   const { userEmail, setUserEmail } = useContext(AppContext);
   const { history, setHistory } = useContext(AppContext);
@@ -33,6 +35,7 @@ function CreateAccount() {
             setShow={setShow}
             setStatus={setStatus}
             userEmail={userEmail}
+            setHistory = {setHistory}
           />
         ) : (
           <CreateMsg setShow={setShow} />
@@ -62,6 +65,7 @@ function CreateForm(props) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [role, setRole] = useState('USER');
+  
 
   function validate(field, label) {
     console.log("in validate");
@@ -78,37 +82,65 @@ function CreateForm(props) {
     return true;
   }
 
-   function handle() {
+
+   async function handle() {
     console.log(name, email, password);
     var data;
     if (!validate(name, "Name")) return;
     if (!validate(email, "Email")) return;
     if (!validate(password, "Password")) return; 
    
-    
-    
-     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log(userCredential.user.uid);
-        data = createUser(userCredential.user.uid);
-        console.log("Login: User created succesfully!!! with data"+JSON.stringify(data));
+   /*  section can be used to encrypt password but in case of firebase, passwords are already encrypted so this is not needed.
+   let hashedPasswd ;
+    try {
+      console.log('password='+password);
+      hashedPasswd = await bcrypt.hash(password, 12);
+      console.log('hashedPasswd='+hashedPasswd);
+    }
+    catch(err) {
+      const error = new Error('coulnt create hashed passwd and user', 500);
+      console.log('err='+err);
+    } 
 
-        props.setStatus("SUCCESS:User created succesfully!");
-      }).then(console.log('in then data is' + data))
-      .catch((error) => {
-        console.log(error.code + ":" + error.mesage);
-        props.setStatus("ERROR:" + error.message);
-      });
-
+     createUserWithEmailAndPassword(auth, email, hashedPasswd) */
+    try {
+     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+     const updUserHistory = await createUser(userCredential.user.uid);
+     props.setHistory(updUserHistory.history);
+     props.setStatus("SUCCESS:User created succesfully!");
+    }
+    catch(err) {
+      props.setStatus('Encountered error while creating user '+err);
+    }
     props.setShow(false);
   }
 
 
   async function createUser(uid) {
-    const url = SERVER_URL +`/account/create/${name}/${email}/${uid}/${role}/${props.userEmail}/`;
+    const url = SERVER_URL +`/account/create`;
+
+    //create user JSON object to send in the body of POST request
+    const user = {
+                  name: name,
+                  email: email,
+                  uid: uid,
+                  roles: role, 
+                  userEmail: props.userEmail}
        
-    var res = await fetch(url);
+    //Make a POST request to create user
+    console.log('user to be sent to fetch post'+JSON.stringify(user));
+        
+    var res = await fetch(url,  { method:'POST', 
+                                  body: JSON.stringify({ "user": user }),
+                                   headers: {
+                                      'Accept': 'application/json',
+                                      'Content-Type': 'application/json',
+                                    },
+                                 } );
+
     var data = await res.json();
+
+    console.log('data is '+data);
     return await data;
 
   }
